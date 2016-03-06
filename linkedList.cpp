@@ -16,8 +16,6 @@ struct Book
 	}
 };
 
-//The book struct has been made above
-
 struct bookList
 {
 	Book* head;
@@ -76,20 +74,44 @@ struct bookList
 		}
 	}
 
-	void reverseList(Book* pNode, Book* cNode, Book* nNode)
+	void reverseList()
 	{
-		if(nNode==NULL)
+			Book* pNode = NULL;
+			Book* cNode;
+
+			if(head == NULL)
+				cNode = NULL;
+			else
+				cNode = head;
+
+			Book* nNode;
+			if(cNode != NULL)
+				nNode = head->next;
+			else
+				nNode = NULL;
+
+			reverseIterate(pNode,cNode,nNode);
+	}
+
+	void reverseIterate(Book* pNode, Book* cNode, Book* nNode)
+	{
+		if(cNode==NULL)
+		{
+			return;
+		}
+		else if(nNode==NULL)
 		{
 			cNode->next = pNode;
 			head = cNode;
 		}
+
 		else
 		{
 			cNode->next = pNode;
 			pNode = cNode;
 			cNode = nNode;
 			nNode = nNode->next;
-			reverseList(pNode,cNode,nNode);
+			reverseIterate(pNode,cNode,nNode);
 		}
 	}
 
@@ -105,6 +127,9 @@ int main()
 	
 	string myBookName;
 	double myBookPrice;
+
+	cout<<"Want to enter elements?\n";
+	cin>>choice;
 
 	while(choice=='y' or choice=='Y')
 	{
@@ -122,11 +147,8 @@ int main()
 	}
 	myBook = myList.head;
 	myList.displayList(myBook);
-
-	Book* pNode = NULL;
-	Book* cNode = myList.head;
-	Book* nNode = myList.head->next;
-	myList.reverseList(pNode,cNode,nNode);
+	
+	myList.reverseList();
 
 	myBook = myList.head;
 	myList.displayList(myBook);
