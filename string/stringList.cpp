@@ -110,16 +110,14 @@ struct stringList
 	{
 		stringNode* end = head;
 
-		stringNode* freddy = head;
-		displayList(freddy);
-
-		//if(head==NULL)								//in case of NULL list, just add the element
-			//appendNode(end,someString);
-
+		if(head==NULL)								//in case of NULL list, just add the element
+			{
+				appendNode(end,someString);
+			}
 
 		else if(head->next==NULL)				//in case of only ONE node
 		{
-			if(!(head->name<someString))
+			if(!(head->name < someString))
 			{
 				stringNode* s =  new stringNode;
 				s->name = someString;
@@ -136,34 +134,36 @@ struct stringList
 
 		else								//in case of more than one node.
 		{
-			if(!(head->name < someString))			//base case, whether the string is alphabetically lesser than the head element
+			if(someString < head->name)			//base case, whether the string is alphabetically lesser than the head element
 			{
 				stringNode* s = new stringNode;
 				s->name = someString;
 				s->next = head;
 				head = s;
-				return;
 			}
-
-			while(end->next!=NULL)					//finding the element where the letter fits
+			else
 			{
-				if(!(end->next->name < someString))
-					break;
+				while(end->next!=NULL)					//finding the element where the letter fits
+				{
+					if(someString < end->next->name)
+						break;
 
-				end=end->next;
+					end=end->next;
+				}
+				
+				if(end->next==NULL)			// in case the element is in the last of the string
+				{
+					appendNode(end,someString);
+				}		
+				else					//appending in between the linked list
+				{
+					stringNode* s = new stringNode;
+					s->name = someString;
+					s->next = end->next;
+					end->next = s;	
+				}
 			}
 			
-			if(end->next==NULL)			// in case the element is in the last of the string
-			{
-				appendNode(end,someString);
-			}		
-			else					//appending in between the linked list
-			{
-				stringNode* s = new stringNode;
-				s->name = someString;
-				s->next = end->next;
-				end->next = s;				
-			}
 		}
 
 	}

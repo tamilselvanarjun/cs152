@@ -23,4 +23,5 @@ int main()
 	cout<<a[0]<<" "<<a[4]<<endl; 		//prints values
 	cout<<a[100];		//handles out of order index exceptions
 
+	
 }

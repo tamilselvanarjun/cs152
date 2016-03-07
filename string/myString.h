@@ -101,6 +101,7 @@ struct myString
 	}
 	
 
+
 	myString operator+(const myString& b)
 	{
 		return myString(ptr, b.ptr);
@@ -115,11 +116,11 @@ struct myString
 
 	char lower(char a)
 	{
-		if(a>'a' and a<'z')
+		if(a>='a' and a<='z')
 			return a;
-		else if(a>'A' and a<'Z')
+		else if(a>='A' and a<='Z')
 		{
-			int k = a - 'A' + 'a';
+			int k = (int)(a - 'A' + 'a');
 			return (char)k;
 		}
 	}
@@ -127,17 +128,33 @@ struct myString
 	bool operator<(const myString& b)
 	{
 		int r = min(len,b.len);
-
-		for(int i=0;i<r;i++)
+		int i = 0;
+		while(i<r)
 		{
-			int t = lower(ptr[i]) - lower(b.ptr[i]);
-			if(t>0)
+			char firstChar, secondChar;
+
+			if(ptr[i] >= 'A' and ptr[i] < 'Z')
+				firstChar = ptr[i] - 'A';
+			else
+				firstChar = ptr[i] -'a';
+
+			if(b.ptr[i] >='A' and b.ptr[i] <='Z')
+				secondChar = b.ptr[i] - 'A';
+			else
+				secondChar = b.ptr[i] - 'a';
+
+			if(firstChar>secondChar)
 				return false;
+			else if(secondChar>firstChar)
+				return true;
+			i++;
 		}
-		if(len - b.len > 0)
+
+		if(len > b.len)
 			return false;
-
-		return true;
-
+		else
+			return true;
 	}
+
+	
 };
