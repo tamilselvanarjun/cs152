@@ -106,7 +106,7 @@ struct stringList
 		}
 	}
 
-	void trivialInsertionSort(stringNode* end)
+	void trivialInsertionSort(stringNode* end)			//this method accepts the array and then sorts
 	{
 		if(end==head)
 		{
@@ -120,8 +120,7 @@ struct stringList
 			stringNode* start = head;
 			stringNode* temp = head;
 			
-			while(true)
-			{
+			
 				if(end->name < head->name)
 				{
 					while(true)
@@ -139,17 +138,15 @@ struct stringList
 
 				else
 				{
+					stringNode* s = head;
+
 					while(!(end->name < start->next->name))
 						start = start->next;
 
 					if(start->next == end)
-						return;
+						trivialInsertionSort(end->next);
 					else
 					{
-						temp = start->next;
-						start->next = end;
-						stringNode* s = head;
-
 						while(true)
 						{
 							if(s->next==end)
@@ -157,23 +154,22 @@ struct stringList
 							s = s->next;
 						}
 
-						s->next = end->next;
+						temp = start->next;
 						start->next = end;
+						s->next = end->next;
+						
 						end->next = temp;
+						trivialInsertionSort(s->next);
 					}
 
-					trivialInsertionSort(s->next);
-
 				}
-
-			}
 
 		}
 	}
 
 
 
-	void insertionSort(myString someString)		//adds and sorts dynamically
+	void insertionSort(myString someString)		//adds and sorts at a time 
 	{
 		stringNode* end = head;
 
@@ -253,11 +249,15 @@ int main()
 	{
 		cin>>temp;
 		s = temp;
-		strList.appendNode(h,s);					//takes input and sorts them
+		h = strList.head;
+		strList.appendNode(h,s);					
 		cout<<"Do you want to enter strings?\n";
 		cin>>choice;
 	}
 
+	h = strList.head;
+	strList.displayList(h);
+	cout<<"\n----------------------------------------\n";
 	h = strList.head;
 	strList.trivialInsertionSort(h);
 	stringNode* end = strList.head;			
