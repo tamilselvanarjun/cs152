@@ -9,7 +9,7 @@ using namespace std;
 
 void initialise(int &a, int &b, char numbermap[])
 {
-	cout<<"Initializing!\n";		//remove
+	//cout<<"Initializing!\n";		//remove
 	for(int i=0;i<10;i++)
 	{
 		if(numbermap[i] == '\0')
@@ -31,7 +31,7 @@ void initialise(int &a, int &b, char numbermap[])
 
 bool isAssigned(string str,int counter,int lettermap[])
 {
-	cout<<"Checking assignment\n";		//remove
+	//cout<<"Checking assignment\n";		//remove
 	if(counter >= str.length())
 		return true;
 	else
@@ -47,22 +47,22 @@ void assignValue(string str,int counter,int lettermap[],char numbermap[],int a)
 {
 	lettermap[ str[counter] - 'a' ] = a;
 	numbermap[a] = str[counter];
-	cout<<"Value assigned.\n";		//remove
+	//cout<<"Value assigned.\n";		//remove
 }
 
 int numberSum(string str1, string str2, int counter, int lettermap[])
 {
 	int sum = 0,a1,a2;
 
-	cout<<"Calculating sum.\n";
+	//cout<<"Calculating sum.\n";
 
-	if(counter > str1.length())
+	if(counter >= str1.length())
 		a1 = 0;
 	else
 	{
 		a1 = lettermap[ str1[counter] - 'a'];
 	}
-	if(counter > str2.length())
+	if(counter >= str2.length())
 		a2 = 0;
 	else
 	{
@@ -75,7 +75,7 @@ int numberSum(string str1, string str2, int counter, int lettermap[])
 
 int valueOf(string str, int counter, int lettermap[])
 {
-	cout<<"Returning values.\n";		//remove
+	//cout<<"Returning values.\n";		//remove
 
 	if(counter > str.length())
 		return 0;
@@ -107,7 +107,7 @@ void iterateValues(int &a, int &b, char numbermap[])
 		}
 	}
 
-	cout<<"Values iterated.\n";
+	//cout<<"Values iterated.\n";
 }
 
 void resetValues(bool &s1, bool &s2, bool &s3, string str1, string str2, string str3, int lettermap[], char numbermap[], int &a, int &b, int counter)
@@ -136,7 +136,7 @@ void resetValues(bool &s1, bool &s2, bool &s3, string str1, string str2, string 
 	}
 	iterateValues(a,b,numbermap);
 
-	cout<<"Values reset.\n";
+	//cout<<"Values reset.\n";
 }
 
 
@@ -145,7 +145,7 @@ void normalise(int &a, int &b)
 {
 	a = a%10;
 	b = b%10;
-	cout<<"Normalised. \n";
+	//cout<<"Normalised. \n";
 }
 
 bool isTaken(int num, char numbermap[])
@@ -163,12 +163,21 @@ void printArray(int lettermap[],char numbermap[])
 		//cout<<lettermap[i]<<" ";
 
 	//cout<<endl;
+	cout<<"Solution -\n";
+	for(int i=0;i<50;i++)
+		cout<<"-";
+	cout<<endl;
 
 	for(int i=0;i<10;i++)
 		if(numbermap[i]!='\0')
-			cout<<numbermap[i]<<"="<<i<<endl;
+			cout<<numbermap[i]<<"="<<i<<" , ";
 
 	cout<<endl;
+
+	for(int i=0;i<50;i++)
+		cout<<"-";
+	cout<<endl;
+
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -179,7 +188,9 @@ bool backtrack(string str1, string str2, string str3, int counter, int lettermap
 	bool s1 = s2 = s3 = false;
 
 	if(counter == str3.length())	//end case
-		return true;
+		{
+			return true;
+		}
 	else								//not the end case
 	{
 		initialise(a,b,numbermap);
@@ -205,11 +216,9 @@ bool backtrack(string str1, string str2, string str3, int counter, int lettermap
 				s2 = true;
 			}
 
-			printArray(lettermap,numbermap);
+			//printArray(lettermap,numbermap);
 			//cout<<"//////\n";
-
 			// Now we need to check whether str3 has got the number mapping or not
-
 			if(isAssigned(str3,counter,lettermap))	//if str3 is assigned
 			{
 				if(numberSum(str1,str2,counter,lettermap)==valueOf(str3,counter,lettermap))
@@ -284,7 +293,10 @@ int main()
 	reverse(str3);
 
 	if(backtrack(str1,str2,str3,0,lettermap,numbermap))
-		cout<<"Solution Found!\n";
+		{
+			cout<<"Solution Found!\n";
+			printArray(lettermap,numbermap);
+		}
 	else
 		cout<<"No Solution Found!\n";
 }

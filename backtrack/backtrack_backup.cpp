@@ -9,7 +9,7 @@ using namespace std;
 
 void initialise(int &a, int &b, char numbermap[])
 {
-	cout<<"Initializing!\n";		//remove
+	//cout<<"Initializing!\n";		//remove
 	for(int i=0;i<10;i++)
 	{
 		if(numbermap[i] == '\0')
@@ -31,7 +31,7 @@ void initialise(int &a, int &b, char numbermap[])
 
 bool isAssigned(string str,int counter,int lettermap[])
 {
-	cout<<"Checking assignment\n";		//remove
+	//cout<<"Checking assignment\n";		//remove
 	if(counter >= str.length())
 		return true;
 	else
@@ -47,35 +47,36 @@ void assignValue(string str,int counter,int lettermap[],char numbermap[],int a)
 {
 	lettermap[ str[counter] - 'a' ] = a;
 	numbermap[a] = str[counter];
-	cout<<"Value assigned.\n";		//remove
+	//cout<<"Value assigned.\n";		//remove
 }
 
-int numberSum(string str1, string str2, int counter, int lettermap[])
+int numberSum(string str1, string str2, int counter, int lettermap[],int carry, int& carryHere)
 {
 	int sum = 0,a1,a2;
 
-	cout<<"Calculating sum.\n";
+	//cout<<"Calculating sum.\n";
 
-	if(counter > str1.length())
+	if(counter >= str1.length())
 		a1 = 0;
 	else
 	{
 		a1 = lettermap[ str1[counter] - 'a'];
 	}
-	if(counter > str2.length())
+	if(counter >= str2.length())
 		a2 = 0;
 	else
 	{
 		a2 = lettermap[ str2[counter] - 'a'];
 	}
 
-	sum = (a1 + a2)%10;
+	sum = (a1 + a2 + carry)%10;
+	carryHere  = (a1+a2+carry)/10;
 	return sum;
 }
 
 int valueOf(string str, int counter, int lettermap[])
 {
-	cout<<"Returning values.\n";		//remove
+	//cout<<"Returning values.\n";		//remove
 
 	if(counter > str.length())
 		return 0;
@@ -105,9 +106,10 @@ void iterateValues(int &a, int &b, char numbermap[])
 				break;
 			a++;
 		}
+
 	}
 
-	cout<<"Values iterated.\n";
+	//cout<<"Values iterated.\n";
 }
 
 void resetValues(bool &s1, bool &s2, bool &s3, string str1, string str2, string str3, int lettermap[], char numbermap[], int &a, int &b, int counter)
@@ -136,7 +138,7 @@ void resetValues(bool &s1, bool &s2, bool &s3, string str1, string str2, string 
 	}
 	iterateValues(a,b,numbermap);
 
-	cout<<"Values reset.\n";
+	//cout<<"Values reset.\n";
 }
 
 
@@ -145,7 +147,7 @@ void normalise(int &a, int &b)
 {
 	a = a%10;
 	b = b%10;
-	cout<<"Normalised. \n";
+	//cout<<"Normalised. \n";
 }
 
 bool isTaken(int num, char numbermap[])
@@ -163,23 +165,39 @@ void printArray(int lettermap[],char numbermap[])
 		//cout<<lettermap[i]<<" ";
 
 	//cout<<endl;
+	cout<<"Solution -\n";
+	for(int i=0;i<50;i++)
+		cout<<"-";
+	cout<<endl;
 
 	for(int i=0;i<10;i++)
 		if(numbermap[i]!='\0')
-			cout<<numbermap[i]<<"="<<i<<endl;
+			cout<<numbermap[i]<<"="<<i<<" , ";
 
 	cout<<endl;
+
+	for(int i=0;i<50;i++)
+		cout<<"-";
+	cout<<endl;
+
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-bool backtrack(string str1, string str2, string str3, int counter, int lettermap[], char numbermap[])
+bool backtrack(string str1, string str2, string str3, int counter, int lettermap[], char numbermap[], int carry = 0)
 {
 	int a = 0, b = 0;
 	bool s2,s3;
 	bool s1 = s2 = s3 = false;
+	int carryHere = 0;
 
-	if(counter == str3.length())	//end case
+	if(counter == str3.length() and carry == 0)	//end case
+	{
 		return true;
+	}
+	else if(counter == str3.length() and carry == 1)
+	{
+		return false;
+	}
 	else								//not the end case
 	{
 		initialise(a,b,numbermap);
@@ -205,23 +223,21 @@ bool backtrack(string str1, string str2, string str3, int counter, int lettermap
 				s2 = true;
 			}
 
-			printArray(lettermap,numbermap);
+			//printArray(lettermap,numbermap);
 			//cout<<"//////\n";
-
 			// Now we need to check whether str3 has got the number mapping or not
-
 			if(isAssigned(str3,counter,lettermap))	//if str3 is assigned
 			{
-				if(numberSum(str1,str2,counter,lettermap)==valueOf(str3,counter,lettermap))
+				if(numberSum(str1,str2,counter,lettermap,carry,carryHere)==valueOf(str3,counter,lettermap))
 				{
-					if(backtrack(str1,str2,str3,counter+1,lettermap,numbermap) == true)
+					if(backtrack(str1,str2,str3,counter+1,lettermap,numbermap,carryHere) == true)
 						return true;	//change this later
 					else
 						resetValues(s1,s2,s3,str1,str2,str3,lettermap,numbermap,a,b,counter);
 				}
 				else
 				{
-					if(s1==false and s2==false)		//both strings already given a number
+					if(s1==false and s2==false)		//both strings already given a number from previous columns
 						return false;
 					else						 
 					{
@@ -231,11 +247,11 @@ bool backtrack(string str1, string str2, string str3, int counter, int lettermap
 			}	
 			else	//if str3 isnt assigned
 			{
-				if( !isTaken( numberSum(str1,str2,counter,lettermap) , numbermap ))	//if the sum is NOT given to some other letter
+				if( !isTaken(numberSum(str1,str2,counter,lettermap,carry,carryHere) , numbermap ))	//if the sum is NOT given to some other letter
 				{
-					assignValue(str3,counter,lettermap,numbermap,numberSum(str1,str2,counter,lettermap));
+					assignValue(str3,counter,lettermap,numbermap,numberSum(str1,str2,counter,lettermap,carry,carryHere));
 					s3 = true;
-					if(backtrack(str1,str2,str3,counter+1,lettermap,numbermap) == true)						//change this later
+					if(backtrack(str1,str2,str3,counter+1,lettermap,numbermap,carryHere) == true)						//change this later
 						return true;
 					else
 						resetValues(s1,s2,s3,str1,str2,str3,lettermap,numbermap,a,b,counter);							//if backtrack doesn't work, reset whatever has been done
@@ -249,7 +265,7 @@ bool backtrack(string str1, string str2, string str3, int counter, int lettermap
 				}
 			}
 		}
-		cout<<"Out of while!\n";
+		//cout<<"Out of while!\n";
 	}
 }
 
@@ -284,7 +300,10 @@ int main()
 	reverse(str3);
 
 	if(backtrack(str1,str2,str3,0,lettermap,numbermap))
-		cout<<"Solution Found!\n";
+		{
+			cout<<"Solution Found!\n";
+			printArray(lettermap,numbermap);
+		}
 	else
 		cout<<"No Solution Found!\n";
 }
