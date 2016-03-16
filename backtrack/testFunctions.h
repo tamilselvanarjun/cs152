@@ -78,7 +78,7 @@ void resetValues(bool &s1, bool &s2, bool &s3, string str1, string str2, string 
 {
 	//resetValues(s1,s2,s3,str1,str2,str3,lettermap,numbermap,a,b,counter);			//to call the resetValues function
 
-	if(s1 == true)		//assignment was done in the current recursion
+	if(s1 == true and b==10)		//assignment was done in the current recursion
 	{
 		numbermap[ lettermap[ str1[counter] -'a' ] ] = '\0';
 		lettermap[str1[counter] - 'a'] = -1;
