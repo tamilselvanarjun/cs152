@@ -135,7 +135,6 @@ void iterateValues(int &a, int &b, char numbermap[],bool k1, bool k2)
 						break;
 					a++;
 				}
-
 				if(a!=10)
 				{
 					b = 0;
@@ -145,7 +144,6 @@ void iterateValues(int &a, int &b, char numbermap[],bool k1, bool k2)
 							break;
 						b++;
 					}
-
 				}
 			}
 		}
@@ -172,9 +170,7 @@ void iterateValues(int &a, int &b, char numbermap[],bool k1, bool k2)
 			}
 		}
 		else
-		{
 			a = b = 10;
-		}
 }
 
 void resetValues(bool &s1, bool &s2, bool &s3, string str1, string str2, string str3, int lettermap[], char numbermap[], int &a, int &b, int counter)
