@@ -1,7 +1,16 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// This program gives ALL solutions for an arithmetic in letters using backtracking (any 3 general strings)
+// Program may look long but there are lots of whitespaces to increase readability and understanding 
+// CS152 project by Rohit Kumar Jena
+// Mostly self documented  (thoughtful choice of variable and function names)
+// Top level structural program
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
 #include <string>
 using namespace std;
 int solutions = 0 ;
+char prevSolution[10];
+
 bool isAssigned(string str,int counter,int lettermap[])
 {
 	if(counter >= str.length())
@@ -20,18 +29,9 @@ void initialise(int &a, int &b, char numbermap[],string str1, string str2, int c
 	bool s1 = isAssigned(str1,counter,lettermap);
 	bool s2 = isAssigned(str2,counter,lettermap);
 
-	int ai,bi;
-	if(counter >= str1.length()-1 and !s1)
-		ai = 1;
-	else
-		ai = 0;
-	if(counter >= str2.length()-1 and !s2)
-		bi = 1;
-	else
-		bi = 0;
-
-	if(!s1 and !s2)		//none are assigned
-	{
+	int ai=0,bi=0;
+	if(!s1 and !s2)					//none are previously assigned
+	{				
 		for(int i=ai;i<10;i++)
 		{
 			if(numbermap[i] == '\0')
@@ -49,7 +49,7 @@ void initialise(int &a, int &b, char numbermap[],string str1, string str2, int c
 			}
 		}
 	}
-	else if(s1 and !s2)	//s1 is assigned
+	else if(s1 and !s2)				//s1 is previously assigned
 	{
 		a = 10;
 		b = bi;
@@ -60,7 +60,7 @@ void initialise(int &a, int &b, char numbermap[],string str1, string str2, int c
 			b++;
 		}
 	}
-	else if(!s1 and s2)	//s2 is assigned
+	else if(!s1 and s2)				//s2 is previously assigned
 	{
 		b = 10;
 		a = ai;
@@ -75,13 +75,13 @@ void initialise(int &a, int &b, char numbermap[],string str1, string str2, int c
 		s1 = s2 = 10;
 }
 
-void assignValue(string str,int counter,int lettermap[],char numbermap[],int a)
+void assignValue(string str,int counter,int lettermap[],char numbermap[],int a)		
 {
 	lettermap[ str[counter] - 'a' ] = a;
 	numbermap[a] = str[counter];
 }
 
-int numberSum(string str1, string str2, int counter, int lettermap[],int carry, int& carryHere)
+int numberSum(string str1, string str2, int counter, int lettermap[],int carry, int& carryHere)		//sum of the 2 strings in consideration
 {
 	int sum = 0,a1,a2;
 	if(counter >= str1.length())
@@ -105,11 +105,8 @@ int valueOf(string str, int counter, int lettermap[])
 {
 	if(counter >= str.length())
 		return 0;
-	else
-		{
-			int k = lettermap[ str[counter] -'a'];
-			return k;
-		} 
+	
+	return lettermap[ str[counter] -'a'];
 }
 
 void iterateValues(int &a, int &b, char numbermap[],bool k1, bool k2)
@@ -170,7 +167,7 @@ void iterateValues(int &a, int &b, char numbermap[],bool k1, bool k2)
 			}
 		}
 		else
-			a = b = 10;
+			a = b = 9;
 }
 
 void resetValues(bool &s1, bool &s2, bool &s3, string str1, string str2, string str3, int lettermap[], char numbermap[], int &a, int &b, int counter)
@@ -188,7 +185,7 @@ void resetValues(bool &s1, bool &s2, bool &s3, string str1, string str2, string 
 			s1 = false;
 		}
 
-		numbermap[ lettermap[ str2[counter] - 'a' ] ] = '\0';				//str2
+		numbermap[ lettermap[ str2[counter] - 'a' ] ] = '\0';				//modify str2
 		lettermap[str2[counter]-'a'] = -1;
 		s2 = false;
 	}
@@ -237,7 +234,6 @@ void reverse(string &s)
 
 void printArray(int lettermap[],char numbermap[],string str1,string str2,string str3)
 {
-	cout<<"Solution: ";
 	string t[3] = {str1,str2,str3};
 	int len[3];
 
@@ -247,7 +243,23 @@ void printArray(int lettermap[],char numbermap[],string str1,string str2,string 
 		len[i] = t[i].length();
 	}
 
+	bool solutionPrinted = true;
 
+	for(int i=0;i<10;i++)
+		if(numbermap[i] != prevSolution[i])
+		{
+			solutionPrinted = false;
+			break;
+		}
+
+	if(!solutionPrinted)
+		for(int i=0;i<10;i++)
+			prevSolution[i] = numbermap[i];
+	
+	if(solutionPrinted)
+		return;
+
+	cout<<"Solution: ";
 	for(int i = 0 ; i<len[0];i++)
 		cout<<lettermap[ t[0][i] - 'a' ];
 	cout<<" + ";
@@ -257,7 +269,9 @@ void printArray(int lettermap[],char numbermap[],string str1,string str2,string 
 	for(int i=0;i<len[2];i++)
 		cout<<lettermap[ t[2][i] - 'a'];
 	cout<<endl;
+	::solutions++;
 }
+
 void backtrack(string str1, string str2, string str3, int counter, int lettermap[], char numbermap[], int carry = 0)
 {
 	int a = 0, b = 0;
@@ -267,19 +281,14 @@ void backtrack(string str1, string str2, string str3, int counter, int lettermap
 	bool temps1 = false,temps2 = false;
 
 	if(counter == str3.length() and carry == 0)	//end case
-	{
 		printArray(lettermap,numbermap,str1,str2,str3);
-		::solutions++;
-	}
+	
 	else if(counter == str3.length() and carry == 1)
-	{
 		return;
-	}
 
 	else								//not the end case
 	{
 		initialise(a,b,numbermap,str1,str2,counter,lettermap);
-
 		while(true)
 		{
 			if(a>=10 and b>=10)
@@ -302,7 +311,23 @@ void backtrack(string str1, string str2, string str3, int counter, int lettermap
 				temps2 = s2;
 			}
 
-			if(isAssigned(str3,counter,lettermap))	//if str3 is assigned
+			if(valueOf(str1,counter,lettermap)==0 and counter == (str1.length()-1))
+			{
+				resetValues(s1,s2,s3,str1,str2,str3,lettermap,numbermap,a,b,counter);
+				if(!temps1)
+					return;
+				continue;
+			}
+
+			if(valueOf(str2,counter,lettermap)==0 and counter == (str2.length()-1))
+			{
+				resetValues(s1,s2,s3,str1,str2,str3,lettermap,numbermap,a,b,counter);
+				if(!temps2)
+					return;
+				continue;
+			}
+
+			if(isAssigned(str3,counter,lettermap))	//if str3 is already assigned
 			{
 				
 				if(valueOf(str3,counter,lettermap)==0 and counter == (str3.length()-1))
@@ -317,12 +342,14 @@ void backtrack(string str1, string str2, string str3, int counter, int lettermap
 						resetValues(s1,s2,s3,str1,str2,str3,lettermap,numbermap,a,b,counter);
 						if(!temps1 and !temps2)
 							return;	
+						temps1 = s1,temps2 = s2;
 				}
 				else
 				{
 					resetValues(s1,s2,s3,str1,str2,str3,lettermap,numbermap,a,b,counter);
 					if(!temps1 and !temps2)
 						return;	
+					temps1 = s1,temps2 = s2;
 				}
 			}	
 			else	//if str3 isnt assigned
@@ -332,23 +359,24 @@ void backtrack(string str1, string str2, string str3, int counter, int lettermap
 					assignValue(str3,counter,lettermap,numbermap,numberSum(str1,str2,counter,lettermap,carry,carryHere));
 					s3 = true;
 
-
 					if(valueOf(str3,counter,lettermap)==0 and counter == (str3.length()-1))
 					{
 						resetValues(s1,s2,s3,str1,str2,str3,lettermap,numbermap,a,b,counter);
-						return;
+						temps1 = s1,temps2 = s2;
 					}
 
 					backtrack(str1,str2,str3,counter+1,lettermap,numbermap,carryHere);	
 					resetValues(s1,s2,s3,str1,str2,str3,lettermap,numbermap,a,b,counter);
 					if(!temps1 and !temps2)
 						return;					//change this later
+					temps1 = s1,temps2 = s2;
 				}
 				else
 				{
 					resetValues(s1,s2,s3,str1,str2,str3,lettermap,numbermap,a,b,counter);
 					if(!temps1 and !temps2)
 						return;
+					temps1 = s1,temps2 = s2;
 				}
 			}
 		}
@@ -359,6 +387,9 @@ void backtrack(string str1, string str2, string str3, int counter, int lettermap
 int main()
 {
 	string str1,str2,str3;
+
+	for(int i=0;i<10;i++)
+		prevSolution[i] = '\0';
 
 	int lettermap[26];
 	for(int i=0;i<26;i++)
