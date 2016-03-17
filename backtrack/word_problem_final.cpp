@@ -3,7 +3,7 @@
 // Program may look long but there are lots of whitespaces to increase readability and understanding 
 // CS152 project by Rohit Kumar Jena
 // Mostly self documented  (thoughtful choice of variable and function names)
-// Top level structural program
+// Thanks for reading and contributing 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
 #include <string>
@@ -232,6 +232,14 @@ void reverse(string &s)
 	}
 }
 
+bool isValid(int len, int lettermap[], string s)
+{
+	for(int i=0;i<len;i++)
+		if(lettermap[s[i]-'a']==-1)
+			return false;
+	return true;
+}
+
 void printArray(int lettermap[],char numbermap[],string str1,string str2,string str3)
 {
 	string t[3] = {str1,str2,str3};
@@ -246,28 +254,12 @@ void printArray(int lettermap[],char numbermap[],string str1,string str2,string 
 	bool solutionPrinted = true;
 	bool isValidSolution = true;
 
-	for(int i = 0 ; i<len[0];i++)
-		if(lettermap[ t[0][i] - 'a' ] == -1)
-		{
-			isValidSolution = false;
-		}
-	for(int i = 0 ; i<len[1];i++)
-		if(lettermap[ t[1][i] - 'a' ] == -1)
-		{
-			isValidSolution = false;
-		}
-	for(int i = 0 ; i<len[2];i++)
-		if(lettermap[ t[2][i] - 'a' ] == -1)
-		{
-			isValidSolution = false;
-		}
+	for(int i=0;i<3;i++)
+		isValidSolution = isValidSolution and isValid(len[i],lettermap,t[i]);
 
 	for(int i=0;i<10;i++)
 		if(numbermap[i] != prevSolution[i])
-		{
 			solutionPrinted = false;
-			break;
-		}
 
 	if(!solutionPrinted)
 		for(int i=0;i<10;i++)
@@ -296,6 +288,9 @@ void backtrack(string str1, string str2, string str3, int counter, int lettermap
 	bool s1 = s2 = s3 = false;
 	int carryHere = 0;
 	bool temps1 = false,temps2 = false;
+
+	if(str3.length() < max(str1.length(),str2.length()))
+		return;
 
 	if(counter == str3.length() and carry == 0)	//end case
 		printArray(lettermap,numbermap,str1,str2,str3);
