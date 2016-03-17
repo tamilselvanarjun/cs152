@@ -244,6 +244,23 @@ void printArray(int lettermap[],char numbermap[],string str1,string str2,string 
 	}
 
 	bool solutionPrinted = true;
+	bool isValidSolution = true;
+
+	for(int i = 0 ; i<len[0];i++)
+		if(lettermap[ t[0][i] - 'a' ] == -1)
+		{
+			isValidSolution = false;
+		}
+	for(int i = 0 ; i<len[1];i++)
+		if(lettermap[ t[1][i] - 'a' ] == -1)
+		{
+			isValidSolution = false;
+		}
+	for(int i = 0 ; i<len[2];i++)
+		if(lettermap[ t[2][i] - 'a' ] == -1)
+		{
+			isValidSolution = false;
+		}
 
 	for(int i=0;i<10;i++)
 		if(numbermap[i] != prevSolution[i])
@@ -256,7 +273,7 @@ void printArray(int lettermap[],char numbermap[],string str1,string str2,string 
 		for(int i=0;i<10;i++)
 			prevSolution[i] = numbermap[i];
 	
-	if(solutionPrinted)
+	if(solutionPrinted or !isValidSolution)
 		return;
 
 	cout<<"Solution: ";
@@ -264,7 +281,7 @@ void printArray(int lettermap[],char numbermap[],string str1,string str2,string 
 		cout<<lettermap[ t[0][i] - 'a' ];
 	cout<<" + ";
 	for(int i = 0 ; i<len[1];i++)
-		cout<<lettermap[ t[1][i] - 'a'];
+			cout<<lettermap[ t[1][i] - 'a'];
 	cout<<" = ";
 	for(int i=0;i<len[2];i++)
 		cout<<lettermap[ t[2][i] - 'a'];
@@ -326,6 +343,7 @@ void backtrack(string str1, string str2, string str3, int counter, int lettermap
 					return;
 				continue;
 			}
+			
 
 			if(isAssigned(str3,counter,lettermap))	//if str3 is already assigned
 			{
@@ -387,16 +405,15 @@ void backtrack(string str1, string str2, string str3, int counter, int lettermap
 int main()
 {
 	string str1,str2,str3;
-
-	for(int i=0;i<10;i++)
+	for(int i=0;i<10;i++)				//Since no solution has been found yet, its initialized to null char array
 		prevSolution[i] = '\0';
 
 	int lettermap[26];
 	for(int i=0;i<26;i++)
-		lettermap[i] = -1;
+		lettermap[i] = -1;				//array used for mapping
 
 	char numbermap[10];
-	for(int i=0;i<10;i++)
+	for(int i=0;i<10;i++)				//array used for mapping 
 		numbermap[i] = '\0';
 
 	cin>>str1>>str2>>str3;
