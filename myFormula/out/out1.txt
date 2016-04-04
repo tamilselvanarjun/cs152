@@ -1,0 +1,3 @@
+Enter the string in prefix notation with parenthesis.
+Original formula - (x^(2/a))
+Differentiated formula - ((2/a)*(x^((2/a)-1)))
